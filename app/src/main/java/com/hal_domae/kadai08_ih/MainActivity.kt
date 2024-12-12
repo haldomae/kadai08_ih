@@ -13,6 +13,7 @@ import com.hal_domae.kadai08_ih.recyclerview.ListAdapter
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var dbHelper: DatabaseHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,6 +24,15 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // データベースから取り出したデータを入れる
+        val data = mutableListOf<Map<String, String>>()
+
+        // データベースを用意
+        dbHelper = DatabaseHelper(this@MainActivity)
+
+        // データベースからデータを取り出す
+        dbHelper.readableDatabase.use { db -> }
 
         val sampleData = mutableListOf(
             mapOf("date" to "2024/01/01", "text" to "ここにテキストが入ります"),
