@@ -32,7 +32,27 @@ class MainActivity : AppCompatActivity() {
         dbHelper = DatabaseHelper(this@MainActivity)
 
         // データベースからデータを取り出す
-        dbHelper.readableDatabase.use { db -> }
+        dbHelper.readableDatabase.use { db ->
+            // queryメソッドの引数
+            // 1 : テーブル名
+            // 2 : 取得するカラム
+            // 3 : 検索条件
+            // 4 : 検索条件に使う値
+            // 5 : グループ化
+            // 6 : グループ化に関する条件
+            // 7 : 並び順
+            // 8 : 取得する件数
+            val cursor = db.query("diary_items", null, null, null, null,null, "diary_date DESC", null)
+
+            // データを取り出す時にはCursorオブジェクトを使う
+            // Cursorオブジェクトはどの行を指しているか
+            cursor.use {
+                // moveToNextで位置を動かす
+                while (it.moveToNext()){
+                    data.add(mapOf("date" to it.getString(0), "text" to it.getString(1)))
+                }
+            }
+        }
 
         val sampleData = mutableListOf(
             mapOf("date" to "2024/01/01", "text" to "ここにテキストが入ります"),
@@ -55,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         // RecyclerViewの設定
         // LayoutManagerでリストの表示形式を決める
         binding.diaryList.layoutManager = LinearLayoutManager(this)
-        binding.diaryList.adapter = ListAdapter(sampleData)
+        binding.diaryList.adapter = ListAdapter(data)
 
         // 区切り線を引く
         val dividerItemDecoration = DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL)
