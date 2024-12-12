@@ -1,7 +1,10 @@
 package com.hal_domae.kadai08_ih
 
+import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -10,6 +13,7 @@ import com.hal_domae.kadai08_ih.databinding.ActivityEditBinding
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
+    private lateinit var dbHelper: DatabaseHelper
     private var textFeeling: String? = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +38,30 @@ class EditActivity : AppCompatActivity() {
         binding.feelNormal.setOnClickListener { feelClicked(it) }
         binding.feelBad.setOnClickListener { feelClicked(it) }
         binding.feelAwful.setOnClickListener { feelClicked(it) }
+
+        // データベースを用意
+        dbHelper = DatabaseHelper(this@EditActivity)
+
+        // 保存ボタンのクリックイベント
+        binding.saveButton.setOnClickListener {
+            // 入力値のチェック
+            if(binding.selectDate.text.isNullOrBlank() || binding.inputDiary.text.isNullOrBlank()){
+                Toast.makeText(this, "未入力の項目があります", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // データを保存する
+            dbHelper.writableDatabase.use { db ->
+                val value = ContentValues().apply {
+                    put("diary_date", binding.selectDate.text.toString())
+                    put("diary_text", binding.inputDiary.text.toString())
+                }
+                // insertで保存
+                db.insert("diary_items", null, value)
+            }
+            // 日記一覧に戻る
+            startActivity(Intent(this@EditActivity, MainActivity::class.java))
+        }
     }
 
     // 気分が選択されたときの共通の関数
