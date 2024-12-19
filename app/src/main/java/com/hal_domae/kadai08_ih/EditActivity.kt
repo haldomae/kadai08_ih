@@ -26,6 +26,12 @@ class EditActivity : AppCompatActivity() {
             insets
         }
 
+        // 項目をタップした時に渡されたデータを反映
+        intent?.extras?.let{
+            binding.selectDate.setText(it.getString("DIARY_DATE"))
+            binding.inputDiary.setText(it.getString("DIARY_TEXT"))
+        }
+
         // カレンダーを表示
         binding.selectDate.setOnClickListener {
             val datePicker = DatePickerFragment()
