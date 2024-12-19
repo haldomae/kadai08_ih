@@ -2,6 +2,7 @@ package com.hal_domae.kadai08_ih
 
 import android.content.ContentValues
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -63,7 +64,10 @@ class EditActivity : AppCompatActivity() {
                     put("diary_text", binding.inputDiary.text.toString())
                 }
                 // insertで保存
-                db.insert("diary_items", null, value)
+                // db.insert("diary_items", null, value)
+                // 日付が重複していたら置き換える
+                // SQLiteDatabase.CONFLICT_REPLACEが重複してたら置き換える
+                db.insertWithOnConflict("diary_items", null, value, SQLiteDatabase.CONFLICT_REPLACE)
             }
             // 日記一覧に戻る
             startActivity(Intent(this@EditActivity, MainActivity::class.java))
